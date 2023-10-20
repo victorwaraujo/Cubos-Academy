@@ -1,0 +1,31 @@
+const pool = require('../conexao')
+
+const listarLivro = async (req, res) => {
+  try {
+    const query = `
+    SELECT l.id as livro_id, l.nome as livro_nome, l.genero, l.editora, l.data_de_publicacao,
+           a.id as id_do_autor, a.nome as autor_nome, a.idade
+    FROM livros l
+    LEFT JOIN autores a ON l.id_do_autor = a.id`
+
+    const resultado = await pool.query(query)
+
+    const livros = resultado.rows.map(row => ({
+      id: row.livro_id,
+      nome: row.livro_nome,
+      genero: row.genero,
+      editora: row.editora,
+      data_publicacao: row.data_de_publicacao,
+      autor: {
+        id: row.id_do_autor,
+        nome: row.autor_nome,
+        idade: row.idade
+      }
+    }))
+    return res.json(livros)
+  } catch (error) {
+    return res.status(500).json({ mensagem: 'Erro interno do servidor' })
+  }
+}
+
+module.exports = listarLivro
