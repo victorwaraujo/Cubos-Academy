@@ -1,0 +1,7 @@
+const express = require('express')
+const roteador = require('./roteadores.js')
+const app = express()
+
+app.use(roteador)
+
+app.listen(8000)
